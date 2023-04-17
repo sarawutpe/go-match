@@ -19,4 +19,4 @@
 
 # More
 *.env
-tmp/
+tmp/main
