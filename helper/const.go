@@ -1,6 +1,11 @@
 package helper
 
 const (
-	Dir        = "DIR"
-	JWT_SECRET = "JWT_SECRET"
+	EnvDir       = "DIR"
+	EnvJWTSecret = "JWT_SECRET"
+)
+
+const (
+	JWTIssuer = "iss"
+	JWTData   = "jwtData"
 )

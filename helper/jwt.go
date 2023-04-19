@@ -22,20 +22,15 @@ import (
 
 // claims["username"] = "john.doe"
 
-type SigningJWT struct {
-	ISS string
-}
-
 type TokenSigningJWT struct {
 	Token        string
 	RefreshToken string
 }
 
-func GenerateJWT(data *SigningJWT) (string, error) {
-	jwtSecret := os.Getenv(JWT_SECRET)
+func GenerateJWT(iss string) (TokenSigningJWT, error) {
+	jwtSecret := os.Getenv(EnvJWTSecret)
 	timeNow := time.Now()
 
-	iss := "6433079093b17af7e4bb8ad8"
 	aud := "go match ltd"
 
 	// Create a new Token.
@@ -45,12 +40,15 @@ func GenerateJWT(data *SigningJWT) (string, error) {
 	claims["iss"] = iss
 	claims["iat"] = timeNow.Unix()
 	claims["aud"] = aud
-	claims["exp"] = timeNow.Add(time.Minute * 5).Unix()
+	claims["exp"] = timeNow.Add(time.Minute * 30).Unix()
 
 	// Sign and get the complete encoded token as a string
 	tokenString, err := token.SignedString([]byte(jwtSecret))
 	if err != nil {
-		return "", err
+		return TokenSigningJWT{
+			Token:        "",
+			RefreshToken: "",
+		}, err
 	}
 
 	// Create a new Refresh Token
@@ -60,17 +58,22 @@ func GenerateJWT(data *SigningJWT) (string, error) {
 	refreshClaims["iss"] = iss
 	refreshClaims["iat"] = timeNow.Unix()
 	refreshClaims["aud"] = aud
-	refreshClaims["exp"] = timeNow.Add(time.Minute * 10).Unix()
+	refreshClaims["exp"] = timeNow.Add(time.Minute * 60).Unix()
 
 	// Sign and get the complete encoded refresh token as a string
 	refreshTokenString, err := refreshToken.SignedString([]byte(jwtSecret))
 	if err != nil {
-		return "", err
+		return TokenSigningJWT{
+			Token:        "",
+			RefreshToken: "",
+		}, err
 	}
 
 	// Return token, refresh token
-
-	return refreshTokenString, nil
+	return TokenSigningJWT{
+		Token:        tokenString,
+		RefreshToken: refreshTokenString,
+	}, nil
 }
 
 // func GenerateRefreshToken() (string, error) {
@@ -96,7 +99,7 @@ func GenerateJWT(data *SigningJWT) (string, error) {
 // Token is expired.
 // invalid character '\x00' looking for beginning of value.
 func VerifyJWT(tokenString string) (jwt.MapClaims, error) {
-	jwtSecret := os.Getenv(JWT_SECRET)
+	jwtSecret := os.Getenv(EnvJWTSecret)
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// Verify the signing method
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {

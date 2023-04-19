@@ -11,6 +11,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func GetUser(c *gin.Context) {
+	jwtData, _ := c.Get(helper.JWTIssuer)
+	log.Println(jwtData)
+	c.JSON(http.StatusBadRequest, gin.H{"success": true, "data": "1234"})
+}
+
 func RemoveFile(c *gin.Context) {
 	id := c.Param("id")
 
@@ -58,24 +64,6 @@ func CreateUser(c *gin.Context) {
 }
 
 type MapClaims map[string]interface{}
-
-func JWT(c *gin.Context) {
-	jwt, _ := helper.GenerateJWT(&helper.SigningJWT{ISS: "123"})
-
-	jwtdata, err := helper.VerifyJWT(jwt)
-
-	if err != nil {
-		log.Println(err)
-	}
-
-	for k, v := range jwtdata {
-		fmt.Println(k, "value is", v)
-	}
-
-	data := map[string]string{"token": jwt, "refreshToken": "2"}
-
-	c.JSON(http.StatusOK, gin.H{"success": true, "data": data})
-}
 
 // Retrieve the inserted document from MongoDB
 // filter := bson.M{"_id": result.InsertedID}

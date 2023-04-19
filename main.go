@@ -111,7 +111,7 @@ func setupRedisClient(ctx context.Context) {
 }
 
 func setupUploadDir() {
-	dirPath := os.Getenv(helper.Dir) + "/upload"
+	dirPath := os.Getenv(helper.EnvDir) + "/upload"
 	if _, err := os.Stat(dirPath); os.IsNotExist(err) {
 		os.MkdirAll(dirPath, os.ModePerm)
 	}

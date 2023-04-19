@@ -34,7 +34,7 @@ func SaveFile(c *gin.Context, file *multipart.FileHeader, err error) (string, er
 	fileName := fmt.Sprintf("%s%s", fileId, strings.ToLower(fileExt))
 
 	// Save the file to the server
-	dst := fmt.Sprintf("%s/%s/%s", os.Getenv(Dir), "upload", fileName)
+	dst := fmt.Sprintf("%s/%s/%s", os.Getenv(EnvDir), "upload", fileName)
 	saveErr := c.SaveUploadedFile(file, dst)
 	if saveErr != nil {
 		return "", saveErr
@@ -48,7 +48,7 @@ func RemoveFile(fileName string) (bool, error) {
 		return false, nil
 	}
 
-	rm := fmt.Sprintf("%s/%s/%s", os.Getenv(Dir), "upload", fileName)
+	rm := fmt.Sprintf("%s/%s/%s", os.Getenv(EnvDir), "upload", fileName)
 	if err := os.Remove(rm); err != nil {
 		log.Println(err.Error())
 		return false, err

@@ -1,6 +1,7 @@
 package router
 
 import (
+	"main/middleware"
 	"main/service"
 
 	"github.com/gin-gonic/gin"
@@ -8,14 +9,19 @@ import (
 
 func SetupRouter(r *gin.Engine) {
 
-	apiv1 := r.Group("/api")
+	authRoutes := r.Group("/api", middleware.AuthJWTMiddleware())
 	{
-		apiv1.POST("/test", service.CreateUser)
-		apiv1.POST("/upload", service.Upload)
-		apiv1.POST("/remove/:id", service.RemoveFile)
+		authRoutes.GET("/user", service.GetUser)
+		authRoutes.POST("/test", service.CreateUser)
+		authRoutes.POST("/upload", service.Upload)
+		authRoutes.POST("/remove/:id", service.RemoveFile)
 
-		apiv1.GET("/jwt", service.JWT)
+	}
 
+	publicRoutes := r.Group("/api")
+	{
+		publicRoutes.GET("/jwt", service.JWT)
+		publicRoutes.GET("/refresh-token/:refresh-token", service.RefreshToken)
 	}
 
 }
