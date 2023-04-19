@@ -12,6 +12,7 @@ $ go get github.com/redis/go-redis/v9
 $ go get github.com/google/uuid
 $ go get github.com/joho/godotenv
 $ go get github.com/sirupsen/logrus
+$ go get github.com/dgrijalva/jwt-go
 --------------------------------------------------------------
 AIR (HOT RELOAD)
 

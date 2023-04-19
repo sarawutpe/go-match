@@ -14,6 +14,8 @@ func SetupRouter(r *gin.Engine) {
 		apiv1.POST("/upload", service.Upload)
 		apiv1.POST("/remove/:id", service.RemoveFile)
 
+		apiv1.GET("/jwt", service.JWT)
+
 	}
 
 }

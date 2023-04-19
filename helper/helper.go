@@ -1,6 +1,8 @@
 package helper
 
 import (
+	"crypto/rand"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"log"
@@ -12,10 +14,6 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-)
-
-const (
-	Dir = "DIR"
 )
 
 func SaveFile(c *gin.Context, file *multipart.FileHeader, err error) (string, error) {
@@ -56,4 +54,13 @@ func RemoveFile(fileName string) (bool, error) {
 		return false, err
 	}
 	return true, nil
+}
+
+// 32 bytes = 256 bits
+func GenerateRandomKey(length int) (string, error) {
+	key := make([]byte, length)
+	if _, err := rand.Read(key); err != nil {
+		return "", err
+	}
+	return base64.RawURLEncoding.EncodeToString(key), nil
 }

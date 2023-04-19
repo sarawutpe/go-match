@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"log"
 	"main/db"
 	"main/helper"
 	"main/model"
@@ -54,6 +55,26 @@ func CreateUser(c *gin.Context) {
 	}
 
 	fmt.Println("Inserted document with ID:", result.InsertedID)
+}
+
+type MapClaims map[string]interface{}
+
+func JWT(c *gin.Context) {
+	jwt, _ := helper.GenerateJWT(&helper.SigningJWT{ISS: "123"})
+
+	jwtdata, err := helper.VerifyJWT(jwt)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	for k, v := range jwtdata {
+		fmt.Println(k, "value is", v)
+	}
+
+	data := map[string]string{"token": jwt, "refreshToken": "2"}
+
+	c.JSON(http.StatusOK, gin.H{"success": true, "data": data})
 }
 
 // Retrieve the inserted document from MongoDB
