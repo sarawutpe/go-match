@@ -9,7 +9,8 @@ import (
 )
 
 const (
-	UsersCollection = "users"
+	UsersCollection  = "users"
+	HotelsCollection = "hotels"
 )
 
 var mongoClient *mongo.Client
@@ -17,7 +18,7 @@ var mongoClient *mongo.Client
 func SetupMongoDBClient(ctx context.Context) {
 	serverAPIOptions := options.ServerAPI(options.ServerAPIVersion1)
 	clientOptions := options.Client().
-		ApplyURI("mongodb+srv://admin:2vitWGctqOohMdEn@cluster0.5bbukuf.mongodb.net/?retryWrites=true&w=majority").
+		ApplyURI("mongodb://localhost:27017").
 		SetServerAPIOptions(serverAPIOptions)
 
 	client, err := mongo.Connect(ctx, clientOptions)
@@ -31,6 +32,7 @@ func SetupMongoDBClient(ctx context.Context) {
 func Collection(collection string) (*mongo.Collection, error) {
 	// Set a default database for the client
 	// Return a collection object bound to the default database
-	defaultDatabase := "myData"
+
+	defaultDatabase := "go"
 	return mongoClient.Database(defaultDatabase).Collection(collection), nil
 }

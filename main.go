@@ -52,7 +52,7 @@ func main() {
 
 	// Start the server
 	r.Run(":8080")
-	fmt.Print("Server is running")
+	fmt.Println("Server is running")
 }
 
 func setupEnv() {

@@ -16,6 +16,12 @@ func SetupRouter(r *gin.Engine) {
 		authRoutes.POST("/upload", service.Upload)
 		authRoutes.POST("/remove/:id", service.RemoveFile)
 
+		authRoutes.GET("/hotels", service.GetHotels)
+		authRoutes.GET("/hotels/:hotelId", service.GetHotelById)
+		authRoutes.POST("/hotels", service.CreateHotel)
+		authRoutes.PUT("/hotels/:hotelId", service.UpdateHotelById)
+		authRoutes.DELETE("/hotels/:hotelId", service.DeleteHotelById)
+
 	}
 
 	publicRoutes := r.Group("/api")

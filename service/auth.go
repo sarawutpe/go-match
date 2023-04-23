@@ -8,42 +8,41 @@ import (
 )
 
 func JWT(c *gin.Context) {
-	jwt, _ := helper.GenerateJWT("6433079093b17af7e4bb8ad8")
-
-	_, err := helper.VerifyJWT("jwt")
+	jwt, err := helper.GenerateJWT("6433079093b17af7e4bb8ad8")
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"success": true, "data": ""})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"success": false, "error": err.Error()})
 	}
 
-	// for k, v := range jwtdata {
-	// 	fmt.Println(k, "value is", v)
-	// }
-
-	data := map[string]string{"token": jwt.Token, "refreshToken": jwt.RefreshToken}
-
+	data := map[string]string{"accessToken": jwt.AccessToken, "refreshToken": jwt.RefreshToken}
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": data})
 }
 
 func RefreshToken(c *gin.Context) {
 	refreshToken := c.Param("refresh-token")
 
-	if refreshToken == "" {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"success": false})
+	jwtData, err := helper.VerifyJWT(refreshToken)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"success": false, "error": err.Error()})
 		return
 	}
 
-	if _, err := helper.VerifyJWT(refreshToken); err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"success": false})
+	// Get Issuer and generate a new token
+	issuer, ok := jwtData[helper.JwtIssuer].(string)
+	if !ok {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"success": false, "error": "Issuer is not a string"})
 		return
 	}
 
-	jwt, err := helper.GenerateJWT("6433079093b17af7e4bb8ad8")
+	newJwt, err := helper.GenerateJWT(issuer)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"success": false})
 		return
 	}
 
-	data := map[string]string{"token": jwt.Token, "refreshToken": jwt.RefreshToken}
+	// log.Println(jwtData["jwt_data"])
+
+	data := map[string]string{"token": newJwt.AccessToken, "refreshToken": newJwt.RefreshToken}
+
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": data})
 }

@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"log"
 	"main/db"
 	"main/helper"
@@ -12,7 +11,7 @@ import (
 )
 
 func GetUser(c *gin.Context) {
-	jwtData, _ := c.Get(helper.JWTIssuer)
+	jwtData, _ := c.Get(helper.JwtIssuer)
 	log.Println(jwtData)
 	c.JSON(http.StatusBadRequest, gin.H{"success": true, "data": "1234"})
 }
@@ -50,7 +49,6 @@ func CreateUser(c *gin.Context) {
 
 	if err := c.ShouldBind(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		fmt.Println("erro")
 		return
 	}
 
@@ -59,20 +57,5 @@ func CreateUser(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error  df": err.Error()})
 		return
 	}
-
-	fmt.Println("Inserted document with ID:", result.InsertedID)
+	c.JSON(http.StatusOK, gin.H{"success": true, "data": result.InsertedID})
 }
-
-type MapClaims map[string]interface{}
-
-// Retrieve the inserted document from MongoDB
-// filter := bson.M{"_id": result.InsertedID}
-// insertedDoc := &model.User{}
-// err = collection.FindOne(ctx, filter).Decode(insertedDoc)
-
-// if err != nil {
-// 	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-// 	return
-// }
-
-// c.JSON(http.StatusCreated, gin.H{"success": true, "data": insertedDoc})

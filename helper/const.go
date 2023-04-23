@@ -6,6 +6,6 @@ const (
 )
 
 const (
-	JWTIssuer = "iss"
-	JWTData   = "jwtData"
+	JwtIssuer = "iss"
+	JwtData   = "jwtData"
 )

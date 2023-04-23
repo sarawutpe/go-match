@@ -23,7 +23,7 @@ import (
 // claims["username"] = "john.doe"
 
 type TokenSigningJWT struct {
-	Token        string
+	AccessToken  string
 	RefreshToken string
 }
 
@@ -36,42 +36,40 @@ func GenerateJWT(iss string) (TokenSigningJWT, error) {
 	// Create a new Token.
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
-
 	claims["iss"] = iss
 	claims["iat"] = timeNow.Unix()
 	claims["aud"] = aud
-	claims["exp"] = timeNow.Add(time.Minute * 30).Unix()
+	claims["exp"] = timeNow.Add(time.Hour * 12).Unix()
 
 	// Sign and get the complete encoded token as a string
 	tokenString, err := token.SignedString([]byte(jwtSecret))
 	if err != nil {
 		return TokenSigningJWT{
-			Token:        "",
+			AccessToken:  "",
 			RefreshToken: "",
 		}, err
 	}
 
 	// Create a new Refresh Token
 	refreshToken := jwt.New(jwt.SigningMethodHS256)
-	refreshClaims := token.Claims.(jwt.MapClaims)
-
+	refreshClaims := refreshToken.Claims.(jwt.MapClaims)
 	refreshClaims["iss"] = iss
 	refreshClaims["iat"] = timeNow.Unix()
 	refreshClaims["aud"] = aud
-	refreshClaims["exp"] = timeNow.Add(time.Minute * 60).Unix()
+	refreshClaims["exp"] = timeNow.Add(time.Hour * 13).Unix()
 
 	// Sign and get the complete encoded refresh token as a string
 	refreshTokenString, err := refreshToken.SignedString([]byte(jwtSecret))
 	if err != nil {
 		return TokenSigningJWT{
-			Token:        "",
+			AccessToken:  "",
 			RefreshToken: "",
 		}, err
 	}
 
 	// Return token, refresh token
 	return TokenSigningJWT{
-		Token:        tokenString,
+		AccessToken:  tokenString,
 		RefreshToken: refreshTokenString,
 	}, nil
 }

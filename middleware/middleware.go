@@ -14,13 +14,13 @@ func AuthJWTMiddleware() gin.HandlerFunc {
 		authHeader := c.GetHeader("Authorization")
 
 		if authHeader == "" {
-			c.AbortWithStatus(http.StatusUnauthorized)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 			return
 		}
 
 		// Check if the header starts with "Bearer"
 		if !strings.HasPrefix(authHeader, "Bearer") {
-			c.AbortWithStatus(http.StatusUnauthorized)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 			return
 		}
 
@@ -30,12 +30,12 @@ func AuthJWTMiddleware() gin.HandlerFunc {
 		// Verify token
 		jwtData, err := helper.VerifyJWT(token)
 		if err != nil {
-			c.AbortWithStatus(http.StatusUnauthorized)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 			return
 		}
 
 		// Add JWT data to the context object
-		c.Set(helper.JWTIssuer, jwtData[helper.JWTIssuer])
+		c.Set(helper.JwtIssuer, jwtData[helper.JwtIssuer])
 		c.Next()
 	}
 }
