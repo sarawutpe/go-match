@@ -17,11 +17,17 @@ type Hotel struct {
 	RoomPrice         int                `bson:"roomPrice,omitempty" json:"roomPrice,omitempty"`
 	RoomMaxPrice      int                `bson:"roomMaxPrice,omitempty" json:"roomMaxPrice,omitempty"`
 	AvailableRoomDays []string           `bson:"availableRoomDays,omitempty" json:"availableRoomDays,omitempty"`
-	Statistics        *Statistics        `bson:"statistics,omitempty" json:"statistics,omitempty"`
-	IsPublic          bool               `bson:"isPublic,omitempty" json:"isPublic,omitempty"`
-	IsActive          bool               `bson:"isActive,omitempty" json:"isActive,omitempty"`
-	CreatedAt         time.Time          `bson:"createdAt,omitempty" json:"createdAt,omitempty"`
-	UpdatedAt         time.Time          `bson:"updatedAt,omitempty" json:"updatedAt,omitempty"`
+	SocialUrls        *SocialUrls `bson:"socialUrls,omitempty" json:"socialUrls,omitempty"`
+	Statistics        *Statistics `bson:"statistics,omitempty" json:"statistics,omitempty"`
+	IsPublic          bool        `bson:"isPublic,omitempty" json:"isPublic,omitempty"`
+	IsActive          bool        `bson:"isActive,omitempty" json:"isActive,omitempty"`
+	CreatedAt         time.Time   `bson:"createdAt,omitempty" json:"createdAt,omitempty"`
+	UpdatedAt         time.Time   `bson:"updatedAt,omitempty" json:"updatedAt,omitempty"`
+}
+
+type SocialUrls struct {
+	Facebook string
+	Line     string
 }
 
 type Statistics struct {

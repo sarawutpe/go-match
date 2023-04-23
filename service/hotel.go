@@ -103,7 +103,8 @@ func CreateHotel(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusOK, model.Response{Data: result})
+	resultId := result.InsertedID
+	c.JSON(http.StatusOK, model.Response{Data: resultId})
 }
 
 // Update hotel by id

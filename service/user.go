@@ -29,16 +29,27 @@ func RemoveFile(c *gin.Context) {
 }
 
 func Upload(c *gin.Context) {
-	file, err := c.FormFile("image")
+	// one file
+	// file, err := c.FormFile("image")
+	// upload, err := helper.SaveFile(c, file, err)
+	// if err != nil {
+	// 	c.JSON(http.StatusOK, gin.H{"success": false, "error": err.Error()})
+	// 	return
+	// }
+	// c.JSON(http.StatusOK, gin.H{"message": "File uploaded successfully" + upload})
 
-	upload, err := helper.SaveFile(c, file, err)
+	// Multiple file uploads
+	form, _ := c.MultipartForm()
+	images := form.File["images"]
+	for _, file := range images {
 
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{"success": false, "error": err.Error()})
-		return
+		log.Println("File name", file.Filename)
+		// handle each uploaded file
+		// file contains information such as filename, size, and the actual file data
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "File uploaded successfully" + upload})
+	c.JSON(http.StatusOK, gin.H{"message": "File uploaded successfully"})
+
 }
 
 func CreateUser(c *gin.Context) {
